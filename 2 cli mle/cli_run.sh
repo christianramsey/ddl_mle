@@ -1,0 +1,11 @@
+gcloud ml-engine jobs submit training $JOB_NAME \
+        --package-path $TRAINER_PACKAGE_PATH \
+        --module-name $MAIN_TRAINER_MODULE \
+        --job-dir $JOB_DIR \
+        --region $REGION \
+        --config config.yaml \
+        -- \
+        --traindata TRAINDATA \
+        --evaldata EVALDATA \
+        --batchsize 300 \
+        --epochs 10

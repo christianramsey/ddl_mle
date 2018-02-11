@@ -1,0 +1,10 @@
+export TRAINER_PACKAGE_PATH="trajectory"
+now=$(date +"%Y%m%d_%H%M%S")
+export JOB_NAME="trajectory_$now"
+export MAIN_TRAINER_MODULE="trajectory.task"
+export JOB_DIR="gs://trajectories/output"
+export PACKAGE_STAGING_LOCATION="gs://trajectories/model"
+export REGION="us-central1"
+export RUNTIME_VERSION="1.4"
+export TRAINDATA="gs://trajectories/train"
+export EVALDATA="gs://trajectories/test"
