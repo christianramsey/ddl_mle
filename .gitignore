@@ -1,0 +1,14 @@
+
+1 structure/.DS_Store
+*.pyc
+1 structure/data/test/.DS_Store
+1 structure/data/test/trajectories.csv-00005-of-00104
+1 structure/data/train/trajectories.csv-00000-of-00104
+1 structure/data/train/trajectories.csv-00002-of-00104
+1 structure/data/train/trajectories.csv-00003-of-00104
+1 structure/data/train/trajectories.csv-00001-of-00104
+*.PA-M-CRAMSEY
+*.pb
+1 structure/tmp/md/export/exporter/1518310290/variables/variables.data-00000-of-00001
+*.index
+1 structure/tmp/md/export/exporter/1518310341/variables/variables.data-00000-of-00001
