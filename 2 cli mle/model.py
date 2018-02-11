@@ -120,17 +120,7 @@ all_fc =  [lat, lng, altitude, date_, time_, dt_, lat_buck,
 
 # define all class labels
 class_labels = ['bike', 'bus', 'car', 'driving meet conjestion', 'plane', 'subway', 'taxi', 'train', 'walk']
-
-
-train_spec = tf.estimator.TrainSpec(train_input, max_steps=100000)
-exporter = tf.estimator.LatestExporter('exporter',serving_input_fn)
-eval_spec = tf.estimator.EvalSpec(eval_input,
-                                exporters=[exporter],
-                                name='trajectory-eval',
-                                steps=10,
-                                throttle_secs=120
-                                )                                  
-
+                     
 def train_eval(traindata, evaldata, batchsize, epochs):
     # define classifier 
     classifier = tf.estimator.DNNLinearCombinedClassifier(
