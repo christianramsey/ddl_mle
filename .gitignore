@@ -1,0 +1,8 @@
+*data
+*.pyc
+*.DS
+*.trajectories
+*.events
+*tmp/
+*.json
+1 structure/.DS_Store
