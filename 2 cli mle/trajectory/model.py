@@ -1,9 +1,8 @@
-# from future import absolute_import
-# from future import division
-# from future import print_function
 import glob, os
 import numpy as np
 import tensorflow as tf
+from tensorflow import feature_column
+from tensorflow.python.lib.io import file_io
 tf.logging.set_verbosity(tf.logging.INFO)
 
 # define columns and field defaults
@@ -121,34 +120,33 @@ all_fc =  [lat, lng, altitude, date_, time_, dt_, lat_buck,
 # define all class labels
 class_labels = ['bike', 'bus', 'car', 'driving meet conjestion', 'plane', 'subway', 'taxi', 'train', 'walk']
                      
-def train_eval(traindata, evaldata, batchsize, epochs):
+def train_eval(traindir, evaldir, batchsize, bucket, epochs, outputdir, **kwargs):
     # define classifier 
+    classifier_config=tf.estimator.RunConfig(save_checkpoints_steps=10, keep_checkpoint_max=500)
+
     classifier = tf.estimator.DNNLinearCombinedClassifier(
         linear_feature_columns=all_fc,
         dnn_feature_columns=real_fc,
         dnn_hidden_units = [15,10,len(class_labels)],
         n_classes=len(class_labels),
         label_vocabulary=class_labels,
-        model_dir="tmp/md",
+        model_dir=outputdir,
+        config=classifier_config
     )
     # load training and eval files    
-    TRAIN_FILES = []
-    for file in glob.glob(traindata):
-        TRAIN_FILES.append(file)
+    # TODO: add local version 
+    traindata =   [file for file in file_io.get_matching_files(traindir)]
+    evaldata =    [file for file in file_io.get_matching_files(evaldir)]
 
-    EVAL_FILES = []
-    for file in glob.glob(evaldata):
-        EVAL_FILES.append(file)
-    
     # define training and eval params
     train_input = lambda: my_input_fn(
-            TRAIN_FILES,
+            traindata,
             batch_size=batchsize,
-            repeat_count = 100
+            repeat_count = epochs
         )
 
     eval_input = lambda: my_input_fn(
-        EVAL_FILES,
+        evaldata,
         batch_size=1,
         perform_shuffle=False,
         repeat_count = 1
@@ -161,7 +159,6 @@ def train_eval(traindata, evaldata, batchsize, epochs):
                                     exporters=[exporter],
                                     name='trajectory-eval',
                                     steps=10,
-                                    throttle_secs=120
                                     )                                  
     # run training and evaluation
     tf.estimator.train_and_evaluate(classifier, train_spec, eval_spec)

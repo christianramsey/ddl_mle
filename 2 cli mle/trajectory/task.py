@@ -1,18 +1,24 @@
 import argparse
+import tensorflow as tf
 import model
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        '--traindata',
+        '--traindir',
         help='Training data directory or files',
-        required=True
+        required=False
     )
     parser.add_argument(
-        '--evaldata',
+        '--evaldir',
         help='Eval data directory or files',
-        required=True
+        required=False
     )
+    parser.add_argument(
+        '--bucket',
+        help='bucket for training/test data',
+        required=False
+    )    
     parser.add_argument(
         '--batchsize',
         help='Batch size for training',
@@ -23,19 +29,28 @@ if __name__ == '__main__':
     parser.add_argument(
         '--epochs',
         help='Epochs for training',
-        required=True
+        required=True,
+        type=int,
+        default=10                
     )  
     parser.add_argument(
-        '--jobdir',
+        '--job-dir',
         help='Job dir for ml engine',
+        required=False
+    )  
+    parser.add_argument(
+        '--job_dir',
+        help='Job dir for ml engine',
+        required=False
+    )      
+    parser.add_argument(
+        '--outputdir',
+        help='Output dir for training/eval',
         required=True
     )      
-
+        
     # parse args
     args = parser.parse_args()
     arguments = args.__dict__
-    print(arguments)
-    jobdir = arguments.pop('jobdir')
-    print(arguments)
 
     model.train_eval(**arguments)
