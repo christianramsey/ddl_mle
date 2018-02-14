@@ -9,6 +9,3 @@
 2 cli/.DS_Store
 .DS_Store
 2 cli mle/env_vars
-*.data-00000-of-00001
-*.index
-*.meta
