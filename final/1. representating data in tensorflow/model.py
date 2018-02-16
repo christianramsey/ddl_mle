@@ -29,9 +29,9 @@ lng      = tf.feature_column.numeric_column("Long")
 altitude = tf.feature_column.numeric_column("Altitude")
 
 # sparse feature_columns
-date_ = tf.feature_column.categorical_column_with_hash_bucket('Date_', 3650)
+date_ = tf.feature_column.categorical_column_with_hash_bucket('Date_', 100)
 time_ = tf.feature_column.categorical_column_with_hash_bucket('Time_', 10000)
-dt_ = tf.feature_column.categorical_column_with_hash_bucket('dt_', 10000)
+dt_ = tf.feature_column.categorical_column_with_hash_bucket('dt_', 20000)
 
 lat_long_buckets = list(np.linspace(-180.0, 180.0, num=1000))
 
@@ -46,5 +46,6 @@ lng_buck = tf.feature_column.bucketized_column(
 real_fc  = [lat, lng, altitude]
 sparse_fc =  [date_, time_, dt_, lat_buck, lng_buck ]
 
-
+print(real_fc)
+print(sparse_fc)
 
