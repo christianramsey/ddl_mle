@@ -60,22 +60,6 @@ def my_input_fn(file_paths, perform_shuffle=True, repeat_count=10000,  batch_siz
     batch_features, batch_labels = iterator.get_next()
     return batch_features, batch_labels
 
-# define serving input for predictions
-def serving_input_fn():
-    feature_placeholders = {
-        'Lat': tf.placeholder(tf.float32, [None]),
-        'Long': tf.placeholder(tf.float32, [None]),
-        'Altitude': tf.placeholder(tf.float32, [None]),
-        'Date_': tf.placeholder(tf.string, [None]),
-        'Time_': tf.placeholder(tf.string, [None]),
-        'dt_': tf.placeholder(tf.string, [None]),
-    }
-    features = {
-        key: tf.expand_dims(tensor, -1)
-        for key, tensor in feature_placeholders.items()
-    }
-    return tf.estimator.export.ServingInputReceiver(features, feature_placeholders)
-
 # define all class labels
 class_labels = ['bike', 'bus', 'car', 'driving meet conjestion', 'plane', 'subway', 'taxi', 'train', 'walk']
                      
