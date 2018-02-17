@@ -100,7 +100,6 @@ def train_eval(traindir, evaldir, batchsize, bucket, epochs, outputdir, **kwargs
     )
 
     # define training, eval spec for train and evaluate including
-    # exporter for predictions
     train_spec = tf.estimator.TrainSpec(train_input, 
                                         max_steps=10000
                                         )
