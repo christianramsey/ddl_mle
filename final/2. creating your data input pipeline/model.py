@@ -1,6 +1,7 @@
 import numpy as np
 import tensorflow as tf
 from tensorflow import feature_column
+from tensorflow.python.lib.io import file_io
 tf.logging.set_verbosity(tf.logging.INFO)
 from pprint import pprint 
 
@@ -53,7 +54,6 @@ def my_input_fn(file_paths, perform_shuffle=True, repeat_count=10000,  batch_siz
                     .map(decode_csv))  # Transform each elem by decode_csv
     if perform_shuffle:
         dataset = dataset.shuffle(buffer_size=256)    
-
     dataset = dataset.repeat(repeat_count)
     dataset = dataset.batch(batch_size)
     iterator = dataset.make_one_shot_iterator()
@@ -76,14 +76,14 @@ def serving_input_fn():
     }
     return tf.estimator.export.ServingInputReceiver(features, feature_placeholders)
 
-
 # define all class labels
 class_labels = ['bike', 'bus', 'car', 'driving meet conjestion', 'plane', 'subway', 'taxi', 'train', 'walk']
                      
 def train_eval(traindir, evaldir, batchsize, bucket, epochs, outputdir, **kwargs):
-    # define classifier 
+    # define classifier config
     classifier_config=tf.estimator.RunConfig(save_checkpoints_steps=10, keep_checkpoint_max=500)
-
+    
+    # define classifier
     classifier = tf.estimator.DNNLinearCombinedClassifier(
         linear_feature_columns=all_feature_columns,
         dnn_feature_columns=real_feature_columns,
@@ -94,7 +94,6 @@ def train_eval(traindir, evaldir, batchsize, bucket, epochs, outputdir, **kwargs
         config=classifier_config
     )
 
-    
     # load training and eval files    
     traindata =   [file for file in file_io.get_matching_files(traindir)]
     evaldata =    [file for file in file_io.get_matching_files(evaldir)]
@@ -124,5 +123,3 @@ def train_eval(traindir, evaldir, batchsize, bucket, epochs, outputdir, **kwargs
                                     )                                  
     # run training and evaluation
     tf.estimator.train_and_evaluate(classifier, train_spec, eval_spec)
-
-
