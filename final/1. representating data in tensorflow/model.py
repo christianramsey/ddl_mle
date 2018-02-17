@@ -1,18 +1,8 @@
 import numpy as np
 import tensorflow as tf
 from tensorflow import feature_column
-from tensorflow.python.lib.io import file_io
 tf.logging.set_verbosity(tf.logging.INFO)
 from pprint import pprint 
-
-# get the data
-# load training and eval files    
-traindir = 'data/train/*'
-evaldir = 'data/test/*'
-
-# traindata =   [file for file in file_io.get_matching_files(traindir)]
-# evaldata =    [file for file in file_io.get_matching_files(evaldir)]
-
 # DESCRIBE DATASET
 # define columns and field defaults
 COLUMNS        = ["Lat", "Long", "Altitude","Date_",
@@ -30,10 +20,10 @@ altitude = tf.feature_column.numeric_column("Altitude")
 
 # sparse feature_columns
 date_ = tf.feature_column.categorical_column_with_hash_bucket('Date_', 100)
-time_ = tf.feature_column.categorical_column_with_hash_bucket('Time_', 10000)
-dt_ = tf.feature_column.categorical_column_with_hash_bucket('dt_', 20000)
+time_ = tf.feature_column.categorical_column_with_hash_bucket('Time_', 100)
+dt_ = tf.feature_column.categorical_column_with_hash_bucket('dt_', 100)
 
-lat_long_buckets = list(np.linspace(-180.0, 180.0, num=1000))
+lat_long_buckets = list(np.linspace(-180.0, 180.0, num=30))
 
 lat_buck  = tf.feature_column.bucketized_column(
     source_column = lat,
@@ -46,6 +36,6 @@ lng_buck = tf.feature_column.bucketized_column(
 real_fc  = [lat, lng, altitude]
 sparse_fc =  [date_, time_, dt_, lat_buck, lng_buck ]
 
-print(real_fc)
-print(sparse_fc)
+pprint(real_fc)
+pprint(sparse_fc)
 

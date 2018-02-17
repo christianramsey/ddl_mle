@@ -133,6 +133,8 @@ def train_eval(traindir, evaldir, batchsize, bucket, epochs, outputdir, **kwargs
         model_dir=outputdir,
         config=classifier_config
     )
+
+    
     # load training and eval files    
     traindata =   [file for file in file_io.get_matching_files(traindir)]
     evaldata =    [file for file in file_io.get_matching_files(evaldir)]
