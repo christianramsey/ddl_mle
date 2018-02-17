@@ -60,3 +60,53 @@ def my_input_fn(file_paths, perform_shuffle=True, repeat_count=10000,  batch_siz
     batch_features, batch_labels = iterator.get_next()
     return batch_features, batch_labels
 
+# define all class labels
+class_labels = ['bike', 'bus', 'car', 
+                'driving meet conjestion', 
+                'plane', 'subway', 'taxi', 
+                'train', 'walk']
+                     
+def train_eval(traindir, evaldir, batchsize, bucket, epochs, outputdir, **kwargs):
+    # define classifier config
+    classifier_config=tf.estimator.RunConfig(save_checkpoints_steps=10, keep_checkpoint_max=500)
+    
+    # define classifier
+    classifier = tf.estimator.DNNLinearCombinedClassifier(
+        linear_feature_columns=all_feature_columns,
+        dnn_feature_columns=real_feature_columns,
+        dnn_hidden_units = [15,10,len(class_labels)],
+        n_classes=len(class_labels),
+        label_vocabulary=class_labels,
+        model_dir=outputdir,
+        config=classifier_config
+    )
+
+    # load training and eval files    
+    traindata =   [file for file in file_io.get_matching_files(traindir)]
+    evaldata =    [file for file in file_io.get_matching_files(evaldir)]
+
+    # define training and eval params
+    train_input = lambda: my_input_fn(
+            traindata,
+            batch_size=batchsize,
+            repeat_count = epochs
+        )
+
+    eval_input = lambda: my_input_fn(
+        evaldata,
+        batch_size=1,
+        perform_shuffle=False,
+        repeat_count = 1
+    )
+
+    # define training, eval spec for train and evaluate including
+    # exporter for predictions
+    train_spec = tf.estimator.TrainSpec(train_input, 
+                                        max_steps=10000
+                                        )
+    eval_spec = tf.estimator.EvalSpec(eval_input,
+                                    name='trajectory-eval',
+                                    steps=10,
+                                    )                                  
+    # run training and evaluation
+    tf.estimator.train_and_evaluate(classifier, train_spec, eval_spec)
