@@ -34,9 +34,8 @@ lng_buck = tf.feature_column.bucketized_column(
     source_column = lng,
     boundaries = lat_long_buckets)
 
-real_fc  = [lat, lng, altitude]
-sparse_fc =  [date_, time_, dt_, lat_buck, lng_buck ]
+real_feature_columns  = [lat, lng, altitude]
+sparse_feature_columns  =  [date_, time_, dt_, lat_buck, lng_buck ]
+all_feature_columns = real_feature_columns + sparse_feature_columns
 
-pprint(real_fc)
-pprint(sparse_fc)
-
+pprint(all_feature_columns)
