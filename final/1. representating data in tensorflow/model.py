@@ -3,6 +3,7 @@ import tensorflow as tf
 from tensorflow import feature_column
 tf.logging.set_verbosity(tf.logging.INFO)
 from pprint import pprint 
+
 # DESCRIBE DATASET
 # define columns and field defaults
 COLUMNS        = ["Lat", "Long", "Altitude","Date_",
