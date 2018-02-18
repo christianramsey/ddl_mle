@@ -71,8 +71,6 @@ def train_eval(traindir, evaldir, batchsize, bucket, epochs, outputdir, hidden_u
     classifier_config=tf.estimator.RunConfig(save_checkpoints_steps=100)
     hidden_units = hidden_units.split(',')
     
-    if embedding == True:
-        real_feature_columns
     # define classifier
     classifier = tf.estimator.DNNLinearCombinedClassifier(
         linear_feature_columns=all_feature_columns,

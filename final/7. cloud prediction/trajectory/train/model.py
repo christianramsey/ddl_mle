@@ -66,11 +66,13 @@ class_labels = ['bike', 'bus', 'car',
                 'plane', 'subway', 'taxi', 
                 'train', 'walk']
                      
-def train_eval(traindir, evaldir, batchsize, bucket, epochs, outputdir, hidden_units="90,40,14", embedding=0, **kwargs):
+def train_eval(traindir, evaldir, batchsize, bucket, epochs, outputdir, hidden_units=[90,40,14], embedding=0, **kwargs):
     # define classifier config
     classifier_config=tf.estimator.RunConfig(save_checkpoints_steps=100)
+    hidden_units = hidden_units.split(',')
     
-    hidden_units = hidden_units.split(sep=',')
+    if embedding == True:
+        real_feature_columns
     # define classifier
     classifier = tf.estimator.DNNLinearCombinedClassifier(
         linear_feature_columns=all_feature_columns,

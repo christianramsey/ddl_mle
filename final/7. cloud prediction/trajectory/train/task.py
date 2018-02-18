@@ -17,7 +17,7 @@ if __name__ == '__main__':
     parser.add_argument(
         '--bucket',
         help='bucket for training/test data',
-        required=False
+        required=False,
     )    
     parser.add_argument(
         '--batchsize',
@@ -54,9 +54,9 @@ if __name__ == '__main__':
         required=False
     )
     parser.add_argument(
-    '--embedding',
-    help='Output dir for training/eval',
-    required=False
+        '--embedding',
+        help='Output dir for training/eval',
+        required=False
     )              
         
     # parse args

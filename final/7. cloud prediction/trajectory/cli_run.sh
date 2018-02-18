@@ -1,4 +1,5 @@
 gcloud ml-engine jobs submit training $JOB_NAME \
+        --stream-logs \
         --package-path $TRAINER_PACKAGE_PATH \
         --module-name $MAIN_TRAINER_MODULE \
         --job-dir $JOB_DIR \
@@ -13,4 +14,4 @@ gcloud ml-engine jobs submit training $JOB_NAME \
         --bucket $BUCKET \
         --outputdir $OUTPUTDIR \
         --batchsize 300 \
-        --epochs 10
+        --epochs 1
