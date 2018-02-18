@@ -9,3 +9,9 @@
 2 cli/.DS_Store
 .DS_Store
 2 cli mle/env_vars
+*.zip
+*.PA-M-CRAMSEY
+*.index
+*.meta
+*.png
+final/4. packaging your model/8/checkpoint

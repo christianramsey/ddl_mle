@@ -1,18 +1,18 @@
 import argparse
 import tensorflow as tf
-import model
+import train.model as model
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument(
         '--traindir',
         help='Training data directory or files',
-        required=False
+        required=True
     )
     parser.add_argument(
         '--evaldir',
         help='Eval data directory or files',
-        required=False
+        required=True
     )
     parser.add_argument(
         '--bucket',
@@ -29,7 +29,7 @@ if __name__ == '__main__':
     parser.add_argument(
         '--epochs',
         help='Epochs for training',
-        required=True,
+        required=False,
         type=int,
         default=10                
     )  
