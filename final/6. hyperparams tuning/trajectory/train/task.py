@@ -47,7 +47,17 @@ if __name__ == '__main__':
         '--outputdir',
         help='Output dir for training/eval',
         required=True
-    )      
+    )   
+    parser.add_argument(
+        '--hidden_units',
+        help='Output dir for training/eval',
+        required=False
+    )
+    parser.add_argument(
+    '--embedding',
+    help='Output dir for training/eval',
+    required=False
+    )              
         
     # parse args
     args = parser.parse_args()

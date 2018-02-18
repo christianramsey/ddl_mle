@@ -39,6 +39,8 @@ real_feature_columns  = [lat, lng, altitude]
 sparse_feature_columns  =  [date_, time_, dt_, lat_buck, lng_buck ]
 all_feature_columns = real_feature_columns + sparse_feature_columns
 
+
+
 # define input pipeline
 def my_input_fn(file_paths, epochs=10, perform_shuffle=True,  batch_size=32):
     def decode_csv(line):
@@ -64,15 +66,17 @@ class_labels = ['bike', 'bus', 'car',
                 'plane', 'subway', 'taxi', 
                 'train', 'walk']
                      
-def train_eval(traindir, evaldir, batchsize, bucket, epochs, outputdir, **kwargs):
+def train_eval(traindir, evaldir, batchsize, bucket, epochs, outputdir, hidden_units=[90,40,14], embedding=0, **kwargs):
     # define classifier config
     classifier_config=tf.estimator.RunConfig(save_checkpoints_steps=100)
     
+    if embedding == True:
+        real_feature_columns
     # define classifier
     classifier = tf.estimator.DNNLinearCombinedClassifier(
         linear_feature_columns=all_feature_columns,
         dnn_feature_columns=real_feature_columns,
-        dnn_hidden_units = [90,40,12],
+        dnn_hidden_units = hidden_units,
         n_classes=len(class_labels),
         label_vocabulary=class_labels,
         model_dir=outputdir,

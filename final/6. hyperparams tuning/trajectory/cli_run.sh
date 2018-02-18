@@ -6,6 +6,7 @@ gcloud ml-engine jobs submit training $JOB_NAME \
         --region $REGION \
         --config $CONFIG \
         --verbosity debug \
+        --scale-tier $SCALE_TIER \
         -- \
         --traindir $TRAINDIR \
         --evaldir $EVALDIR \
