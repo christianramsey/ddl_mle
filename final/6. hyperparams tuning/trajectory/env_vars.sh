@@ -11,4 +11,3 @@ export TRAINDIR="gs://trajectories/data/train"
 export EVALDIR="gs://trajectories/data/test"
 export OUTPUTDIR="gs://trajectories/output"
 export BUCKET="trajectories"
-
