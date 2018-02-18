@@ -77,7 +77,7 @@ def train_eval(traindir, evaldir, batchsize, bucket, epochs, outputdir, **kwargs
         label_vocabulary=class_labels,
         model_dir=outputdir,
         config=classifier_config, 
-        dnn_dropout=.2
+        dnn_dropout=.6
     )
 
     # load training and eval files    
