@@ -1,8 +1,8 @@
 trainingInput:
   scaleTier: STANDARD_1
   hyperparameters:
-    goal: MINIMIZE
-    hyperparameterMetricTag: loss
+    goal: MAXIMIZE
+    hyperparameterMetricTag: accuracy
     maxTrials: 4
     maxParallelTrials: 3
     params:
