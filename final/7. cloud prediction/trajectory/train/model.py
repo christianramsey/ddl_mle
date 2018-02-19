@@ -70,9 +70,7 @@ def train_eval(traindir, evaldir, batchsize, bucket, epochs, outputdir, hidden_u
     # define classifier config
     classifier_config=tf.estimator.RunConfig(save_checkpoints_steps=100)
     hidden_units = hidden_units.split(',')
-    
-    if embedding == True:
-        real_feature_columns
+
     # define classifier
     classifier = tf.estimator.DNNLinearCombinedClassifier(
         linear_feature_columns=all_feature_columns,
@@ -80,9 +78,10 @@ def train_eval(traindir, evaldir, batchsize, bucket, epochs, outputdir, hidden_u
         dnn_hidden_units = hidden_units,
         n_classes=len(class_labels),
         label_vocabulary=class_labels,
-        model_dir=outputdir,
         config=classifier_config, 
-        dnn_dropout=.6
+        dnn_dropout=.6,
+        dnn_optimizer=tf.train.ProximalAdagradOptimizer(0.001),
+        model_dir=outputdir
         )
     
     tf.train.ProximalAdagradOptimizer(

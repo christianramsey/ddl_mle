@@ -66,9 +66,10 @@ class_labels = ['bike', 'bus', 'car',
                 'plane', 'subway', 'taxi', 
                 'train', 'walk']
                      
-def train_eval(traindir, evaldir, batchsize, bucket, epochs, outputdir, hidden_units=[90,40,14], embedding=0, **kwargs):
+def train_eval(traindir, evaldir, batchsize, bucket, epochs, outputdir, hidden_units, embedding, job_dir, **kwargs):
     # define classifier config
-    classifier_config=tf.estimator.RunConfig(save_checkpoints_steps=100)
+    classifier_config=tf.estimator.RunConfig(save_checkpoints_steps=10)
+    
     hidden_units = hidden_units.split(',')
     
     # define classifier
@@ -78,7 +79,7 @@ def train_eval(traindir, evaldir, batchsize, bucket, epochs, outputdir, hidden_u
         dnn_hidden_units = hidden_units,
         n_classes=len(class_labels),
         label_vocabulary=class_labels,
-        model_dir=outputdir,
+        model_dir=job_dir,
         config=classifier_config, 
         dnn_dropout=.6
         )
