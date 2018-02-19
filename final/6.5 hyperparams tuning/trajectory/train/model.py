@@ -13,85 +13,91 @@ FIELD_DEFAULTS = [[0.], [0.], [0.], ['na'],
                   ['na'], ['na'], ['na']]
 feature_names = COLUMNS[:-1]
 
-# FEATURE COLUMNS
-## represent feature columns
-# dense feature_columns
-lat      = tf.feature_column.numeric_column("Lat")
-lng      = tf.feature_column.numeric_column("Long")
-altitude = tf.feature_column.numeric_column("Altitude")
 
-# sparse feature_columns
-date_ = tf.feature_column.categorical_column_with_hash_bucket('Date_', 100)
-time_ = tf.feature_column.categorical_column_with_hash_bucket('Time_', 100)
-dt_ = tf.feature_column.categorical_column_with_hash_bucket('dt_', 100)
+def get_features(extras):
+        
+    # FEATURE COLUMNS
+    ## represent feature columns
+    # dense feature_columns
+    lat      = tf.feature_column.numeric_column("Lat")
+    lng      = tf.feature_column.numeric_column("Long")
+    altitude = tf.feature_column.numeric_column("Altitude")
 
-lat_long_buckets = list(np.linspace(-180.0, 180.0, num=30))
+    # sparse feature_columns
+    date_ = tf.feature_column.categorical_column_with_hash_bucket('Date_', 100)
+    time_ = tf.feature_column.categorical_column_with_hash_bucket('Time_', 100)
+    dt_ = tf.feature_column.categorical_column_with_hash_bucket('dt_', 100)
 
-lat_buck  = tf.feature_column.bucketized_column(
-    source_column = lat,
-    boundaries = lat_long_buckets )
+    lat_long_buckets = list(np.linspace(-180.0, 180.0, num=30))
 
-lng_buck = tf.feature_column.bucketized_column(
-    source_column = lng,
-    boundaries = lat_long_buckets)
+    lat_buck  = tf.feature_column.bucketized_column(
+        source_column = lat,
+        boundaries = lat_long_buckets )
 
-#  hyperparams: adding features for testing in hyperparm
-crossed_lat_lon = tf.feature_column.crossed_column(
-    [lat_buck, lng_buck], 7000)
+    lng_buck = tf.feature_column.bucketized_column(
+        source_column = lng,
+        boundaries = lat_long_buckets)
 
-lng_buck_embedding = tf.feature_column.embedding_column(
-    categorical_column=lng_buck,
-    dimension=3)
+    #  hyperparams: adding features for testing in hyperparm
+    crossed_lat_lon = tf.feature_column.crossed_column(
+        [lat_buck, lng_buck], 7000)
 
-lat_buck_embedding = tf.feature_column.embedding_column(
-    categorical_column=lat_buck,
-    dimension=3)
+    lng_buck_embedding = tf.feature_column.embedding_column(
+        categorical_column=lng_buck,
+        dimension=3)
 
-crossed_ll_embedding = tf.feature_column.embedding_column(
-    categorical_column=crossed_lat_lon,
-    dimension=12)
+    lat_buck_embedding = tf.feature_column.embedding_column(
+        categorical_column=lat_buck,
+        dimension=3)
 
-crossed_all = tf.feature_column.crossed_column(
-    ['Lat', 'Long', 'Date_', 'Time_', 'dt_'], 20000)
+    crossed_ll_embedding = tf.feature_column.embedding_column(
+        categorical_column=crossed_lat_lon,
+        dimension=12)
 
-crossed_all_embedding = tf.feature_column.embedding_column(
-    categorical_column=crossed_all,
-    dimension=89)
+    crossed_all = tf.feature_column.crossed_column(
+        ['Lat', 'Long', 'Date_', 'Time_', 'dt_'], 20000)
 
-date_embedding = tf.feature_column.embedding_column(
-    categorical_column=date_,
-    dimension=24)
+    crossed_all_embedding = tf.feature_column.embedding_column(
+        categorical_column=crossed_all,
+        dimension=89)
 
-time_embedding = tf.feature_column.embedding_column(
-    categorical_column=time_,
-    dimension=16)
+    date_embedding = tf.feature_column.embedding_column(
+        categorical_column=date_,
+        dimension=24)
 
-dt_embedding = tf.feature_column.embedding_column(
-    categorical_column=dt_,
-    dimension=224)
+    time_embedding = tf.feature_column.embedding_column(
+        categorical_column=time_,
+        dimension=16)
 
-real_feature_eng = [
-            lng_buck_embedding, lat_buck_embedding,
+    dt_embedding = tf.feature_column.embedding_column(
+        categorical_column=dt_,
+        dimension=224)
+
+    real_feature_eng = [ lng_buck_embedding, lat_buck_embedding,
+            crossed_ll_embedding, date_embedding, time_embedding,
+            dt_embedding, crossed_all_embedding]
+    sparse_feature_eng = [ lng_buck, lat_buck, crossed_all, crossed_lat_lon]           
+    all_feature_eng =  [    lng_buck_embedding, lat_buck_embedding,
+                            crossed_ll_embedding, date_embedding, 
+                            time_embedding, dt_embedding,
+                            crossed_all, crossed_all_embedding]
+    all_feature_columns = []
+    real_feature_columns  = []
+    if (extras == 1):
+        real_feature_columns  = [lat, lng, altitude]
+        sparse_feature_columns  =  [date_, time_, dt_, lat_buck, lng_buck ]
+        all_feature_columns = real_feature_columns + sparse_feature_columns
+    else:
+        real_feature_columns = [lat, lng, altitude,
+           lng_buck_embedding, lat_buck_embedding,
            crossed_ll_embedding, date_embedding, time_embedding,
            dt_embedding, crossed_all_embedding]
-sparse_feature_eng = [
-            lng_buck,
-            lat_buck,
-            crossed_all,
-            crossed_lat_lon
-            ]           
-all_feature_eng =  [
-            lng_buck_embedding, lat_buck_embedding,
+        all_feature_columns =  [lat, lng, altitude, date_, time_, dt_, lat_buck,
+           lng_buck, lng_buck_embedding, lat_buck_embedding,
            crossed_ll_embedding, date_embedding, time_embedding, dt_embedding,
            crossed_all, crossed_all_embedding]
 
-real_feature_columns  = [lat, lng, altitude]
-sparse_feature_columns  =  [date_, time_, dt_, lat_buck, lng_buck ]
-all_feature_columns = real_feature_columns + sparse_feature_columns
-
-real_feature_columns_fe = real_feature_columns + real_feature_eng
-sparse_feature_columns_fe = sparse_feature_columns + sparse_feature_eng
-all_feature_columns_fe = all_feature_columns + all_feature_eng
+    return real_feature_columns, all_feature_columns
 
 # define input pipeline
 def my_input_fn(file_paths, epochs=10, perform_shuffle=True,  batch_size=32):
@@ -123,10 +129,13 @@ def train_eval(traindir, evaldir, batchsize, bucket, epochs, outputdir, hidden_u
     classifier_config=tf.estimator.RunConfig(save_checkpoints_steps=10)
     
     hidden_units = hidden_units.split(',')
-    
-    if (feat_eng_cols == 1):
-        all_feature_columns = all_feature_columns_fe
-        real_feature_columns = real_feature_columns_fe
+    real_feature_columns, all_feature_columns = get_features(feat_eng_cols)
+
+    optimizer = tf.train.ProximalAdagradOptimizer(
+            learning_rate=0.01,
+            l1_regularization_strength=0.1,
+            l2_regularization_strength=0.01
+            )
     # define classifier
     classifier = tf.estimator.DNNLinearCombinedClassifier(
         linear_feature_columns=all_feature_columns,
@@ -136,16 +145,11 @@ def train_eval(traindir, evaldir, batchsize, bucket, epochs, outputdir, hidden_u
         label_vocabulary=class_labels,
         model_dir=job_dir,
         config=classifier_config, 
-        dnn_dropout=.6,
-        dnn_optimizer=tf.train.ProximalAdagradOptimizer(
-            learning_rate=0.1)
+        dnn_dropout=.99,
+        dnn_optimizer=optimizer
         )
     
-    tf.train.ProximalAdagradOptimizer(
-            learning_rate=0.1,
-            l1_regularization_strength=0.001,
-            l2_regularization_strength=0.001
-            )
+   
 
     # load training and eval files    
     traindata =   [file for file in file_io.get_matching_files(traindir + '/trajectories.csv*')]
@@ -168,10 +172,11 @@ def train_eval(traindir, evaldir, batchsize, bucket, epochs, outputdir, hidden_u
 
     # define training, eval spec for train and evaluate including
     train_spec = tf.estimator.TrainSpec(train_input, 
-                                        max_steps=600000
+                                        max_steps=801
                                         )
     eval_spec = tf.estimator.EvalSpec(eval_input,
-                                    name='trajectory-eval'
+                                    name='trajectory-eval',
+                                    steps=1
                                     )                                  
     # run training and evaluation
     tf.estimator.train_and_evaluate(classifier, train_spec, eval_spec)
