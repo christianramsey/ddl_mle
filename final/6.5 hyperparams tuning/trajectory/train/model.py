@@ -175,8 +175,7 @@ def train_eval(traindir, evaldir, batchsize, bucket, epochs, outputdir, hidden_u
                                         max_steps=801
                                         )
     eval_spec = tf.estimator.EvalSpec(eval_input,
-                                    name='trajectory-eval',
-                                    steps=1
+                                    name='trajectory-eval'
                                     )                                  
     # run training and evaluation
     tf.estimator.train_and_evaluate(classifier, train_spec, eval_spec)
