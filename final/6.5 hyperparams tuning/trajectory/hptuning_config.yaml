@@ -3,11 +3,9 @@ trainingInput:
   hyperparameters:
     goal: MINIMIZE
     hyperparameterMetricTag: loss
-    maxTrials: 4
+    maxTrials: 2
     maxParallelTrials: 3
     params:
     - parameterName: feat_eng_cols
-      type: INTEGER
-      minValue: 0
-      maxValue: 1
-      scaleType: UNIT_LINEAR_SCALE
+      type: CATEGORICAL
+      categoricalValues: ["ON", "OFF"]  

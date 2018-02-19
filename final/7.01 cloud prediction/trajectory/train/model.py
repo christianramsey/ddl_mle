@@ -83,7 +83,7 @@ def get_features(extras):
                             crossed_all, crossed_all_embedding]
     all_feature_columns = []
     real_feature_columns  = []
-    if (extras == 1):
+    if (extras == 'NO'):
         real_feature_columns  = [lat, lng, altitude]
         sparse_feature_columns  =  [date_, time_, dt_, lat_buck, lng_buck ]
         all_feature_columns = real_feature_columns + sparse_feature_columns
@@ -123,6 +123,23 @@ class_labels = ['bike', 'bus', 'car',
                 'driving meet conjestion', 
                 'plane', 'subway', 'taxi', 
                 'train', 'walk']
+
+def serving_input_fn():
+    feature_placeholders = {
+        'Lat': tf.placeholder(tf.float32, [None]),
+        'Long': tf.placeholder(tf.float32, [None]),
+        'Altitude': tf.placeholder(tf.float32, [None]),
+        'Date_': tf.placeholder(tf.string, [None]),
+        'Time_': tf.placeholder(tf.string, [None]),
+        'dt_': tf.placeholder(tf.string, [None]),
+    }
+    features = {
+        key: tf.expand_dims(tensor, -1)
+        for key, tensor in feature_placeholders.items()
+    }
+    return tf.estimator.export.ServingInputReceiver(features, feature_placeholders)
+
+
                      
 def train_eval(traindir, evaldir, batchsize, bucket, epochs, outputdir, hidden_units, feat_eng_cols, job_dir, **kwargs):
     # define classifier config
@@ -172,10 +189,13 @@ def train_eval(traindir, evaldir, batchsize, bucket, epochs, outputdir, hidden_u
 
     # define training, eval spec for train and evaluate including
     train_spec = tf.estimator.TrainSpec(train_input, 
-                                        max_steps=801
+                                        max_steps=2000
                                         )
+    
+    exporter = tf.estimator.LatestExporter('exporter',serving_input_fn)                                    
     eval_spec = tf.estimator.EvalSpec(eval_input,
-                                    name='trajectory-eval'
+                                    name='trajectory-eval',
+                                    exporters=[exporter]
                                     )                                  
     # run training and evaluation
     tf.estimator.train_and_evaluate(classifier, train_spec, eval_spec)

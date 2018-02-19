@@ -83,7 +83,7 @@ def get_features(extras):
                             crossed_all, crossed_all_embedding]
     all_feature_columns = []
     real_feature_columns  = []
-    if (extras == 1):
+    if (extras == 'NO'):
         real_feature_columns  = [lat, lng, altitude]
         sparse_feature_columns  =  [date_, time_, dt_, lat_buck, lng_buck ]
         all_feature_columns = real_feature_columns + sparse_feature_columns
