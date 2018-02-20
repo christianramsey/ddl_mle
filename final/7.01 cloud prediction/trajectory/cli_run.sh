@@ -14,4 +14,6 @@ gcloud ml-engine jobs submit training $JOB_NAME \
         --bucket $BUCKET \
         --outputdir $OUTPUTDIR \
         --batchsize 300 \
-        --epochs 1
+        --epochs 1 \
+        --hidden_units '64,12' \
+        --feat_eng_cols 'ON'
