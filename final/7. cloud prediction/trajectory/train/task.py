@@ -36,7 +36,7 @@ if __name__ == '__main__':
     parser.add_argument(
         '--job-dir',
         help='Job dir for ml engine',
-        required=False
+        required=True
     )  
     parser.add_argument(
         '--job_dir',
@@ -54,14 +54,14 @@ if __name__ == '__main__':
         required=False
     )
     parser.add_argument(
-        '--embedding',
-        help='Output dir for training/eval',
+        '--feat_eng_cols',
+        help='adding extra features',
         required=False
     )              
         
     # parse args
     args = parser.parse_args()
     arguments = args.__dict__
-    
+    print(arguments)
 
     model.train_eval(**arguments)
